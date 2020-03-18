@@ -72,8 +72,20 @@ window.onload = function() {
         parent: p35,
         x: "50% - 16px",
         y: "50% - 16px"
-    });
+	});
+	
+	btn1 = UI.button({
+		src: "github.png",
+		parent: p1,
+		x: "0",
+		y: "0",
+		callback: testButton
+	});
 
 	//this will be automatic soon
 	UI.fullscreen();
 }
+
+function testButton() {
+	alert("Button clicked");
+};

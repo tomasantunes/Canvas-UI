@@ -4,6 +4,7 @@ var UI = (function() {
 	var canvas;
 	var ctx;
 	var tree;
+	var mousePos = {x: 0, y: 0};
 	var currentTheme = "default";
 	var themes = {
 		"default": {
@@ -135,6 +136,20 @@ var UI = (function() {
 		};
 
 		if(c.calculate) c.calculate();
+	}
+
+	function loopTree(tree, func) {
+		for (var i in tree._children) {
+			var node = tree._children[i];
+			func(node);
+			loopTree(node, func);
+		}
+	}
+
+	function triggerClick(node) {
+		if (typeof node.click !== "undefined") { 
+			node.click(UI);
+		}
 	}
 	
 	/**
@@ -325,7 +340,7 @@ var UI = (function() {
             }
 
             ctx.restore();
-        }
+		},
 	};
 
 	return {
@@ -357,8 +372,24 @@ var UI = (function() {
 				width: canvas.width,
 				height: canvas.height
 			};
+
+			canvas.addEventListener("click", function(e) {
+				var rect = canvas.getBoundingClientRect();
+				mousePos = {
+					x: e.clientX - rect.left,
+					y: e.clientY - rect.top
+				};
+				console.log("click");
+				console.log(e);
+				loopTree(tree, triggerClick)
+				
+			});
 		},
-		
+
+		getMousePos: function() {
+			return mousePos;
+		},
+
 		/**
 		* Define a widget for the UI library
 		*/
@@ -494,6 +525,49 @@ UI.e("image", {
             this._actual.y
        );
     }
+});
+
+UI.e("button", {
+    _src: null,
+
+    init: function(opts) {
+        console.log("Button", opts);
+        this._src = new Image();
+		this._src.src = opts.src;
+		this.callback = opts.callback;
+
+        this._src.onload = function() {
+            UI.repaint();
+		}
+    },
+
+    calculate: function() {
+        if(!this._src.complete) return;
+        this.width = this._src.width;
+        this.height = this._src.height;
+    },
+
+    draw: function(ctx) {
+       this.supr.draw.call(this, ctx);
+       if(this._src.complete === false) return;
+
+       ctx.drawImage(
+            this._src,
+            this._actual.x,
+            this._actual.y
+       );
+	},
+	
+	click: function() {
+		var mousePos = UI.getMousePos();
+		console.log(mousePos);
+		if (mousePos.x < this._actual.x + this.width &&
+			mousePos.x + this.width > this._actual.x &&
+			mousePos.y < this._actual.y + this.height &&
+			mousePos.y + this.height > this._actual.y) {
+				this.callback();
+		}
+	}
 });
 	
 window.UI = UI;
