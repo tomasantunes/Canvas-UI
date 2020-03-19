@@ -220,7 +220,6 @@ var UI = (function() {
 		//copy the theme properties
 		
 		var theme = themes[opts.theme || currentTheme];
-		console.log(opts.theme, currentTheme, opts, theme, this);
 		for(var key in theme) {
 			if(this[key] === undefined)
 				this[key] = theme[key];
@@ -379,8 +378,6 @@ var UI = (function() {
 					x: e.clientX - rect.left,
 					y: e.clientY - rect.top
 				};
-				console.log("click");
-				console.log(e);
 				loopTree(tree, triggerClick)
 			};
 		},
@@ -499,7 +496,6 @@ UI.e("image", {
     _src: null,
 
     init: function(opts) {
-        console.log("Image", opts);
         this._src = new Image();
         this._src.src = opts.src;
 
@@ -530,7 +526,6 @@ UI.e("button", {
     _src: null,
 
     init: function(opts) {
-        console.log("Button", opts);
         this._src = new Image();
 		this._src.src = opts.src;
 		this.callback = opts.callback;
@@ -559,7 +554,6 @@ UI.e("button", {
 	
 	click: function() {
 		var mousePos = UI.getMousePos();
-		console.log(mousePos);
 		if (mousePos.x < this._actual.x + this.width &&
 			mousePos.x + this.width > this._actual.x &&
 			mousePos.y < this._actual.y + this.height &&
