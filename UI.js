@@ -373,7 +373,7 @@ var UI = (function() {
 				height: canvas.height
 			};
 
-			canvas.addEventListener("click", function(e) {
+			canvas.onclick = function(e) {
 				var rect = canvas.getBoundingClientRect();
 				mousePos = {
 					x: e.clientX - rect.left,
@@ -382,8 +382,7 @@ var UI = (function() {
 				console.log("click");
 				console.log(e);
 				loopTree(tree, triggerClick)
-				
-			});
+			};
 		},
 
 		getMousePos: function() {
