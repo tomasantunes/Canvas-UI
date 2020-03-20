@@ -73,13 +73,13 @@ window.onload = function() {
 		parent: p4,
 		x: "0",
 		y: "0",
-		callback: testButton
+		callback: testButton.bind(this, 1)
 	});
 
 	//this will be automatic soon
 	UI.fullscreen();
 }
 
-function testButton() {
-	alert("Button clicked");
+function testButton(id) {
+	alert("Button" + id.toString() + " clicked");
 };
