@@ -2,6 +2,7 @@
 
 var UI = (function() {
 	var canvas;
+	var canvas_id;
 	var ctx;
 	var tree;
 	var mousePos = {x: 0, y: 0};
@@ -352,11 +353,13 @@ var UI = (function() {
 			if(cv) {
 				if(typeof cv === "string") {
 					canvas = document.getElementById(cv);
+					canvas_id = cv;
 				} else {
 					canvas = cv;
 				}
 			} else {
 				canvas = document.getElementById("canvas");
+				canvas_id = "canvas";
 			}
 
 			ctx = canvas.getContext("2d");
@@ -384,6 +387,10 @@ var UI = (function() {
 
 		getMousePos: function() {
 			return mousePos;
+		},
+
+		getCanvasID: function() {
+			return canvas_id;
 		},
 
 		/**
@@ -560,6 +567,49 @@ UI.e("button", {
 			mousePos.y + this.height > this._actual.y) {
 				this.callback();
 		}
+	}
+});
+
+UI.e("input", {
+    _src: null,
+
+    init: function(opts) {
+		console.log(UI.getCanvasID());
+        this._src = new CanvasInput();
+
+        this._src.onload = function() {
+            UI.repaint();
+		}
+    },
+
+    calculate: function() {
+		if(!this._src.complete) return;
+        this.width = this._src.width;
+		this.height = this._src.height;
+    },
+
+    draw: function(ctx) {
+		this.supr.draw.call(this, ctx);
+		if(this._src.complete === false) return;
+
+		this._src = new CanvasInput({
+			canvas: document.getElementById(UI.getCanvasID()),
+			fontSize: 18,
+			fontFamily: 'Arial',
+			fontColor: '#212121',
+			fontWeight: 'bold',
+			padding: 8,
+			borderWidth: 1,
+			borderColor: '#000',
+			borderRadius: 3,
+			boxShadow: '1px 1px 0px #fff',
+			innerShadow: '0px 0px 5px rgba(0, 0, 0, 0.5)',
+			placeHolder: 'Enter message here...',
+			x: this._actual.x,
+			y: this._actual.y,
+		});
+
+		this._src.render();
 	}
 });
 	

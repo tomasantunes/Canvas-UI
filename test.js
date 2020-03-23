@@ -4,7 +4,7 @@
 * - Data binding
 */
 window.onload = function() {
-	UI.init();
+	UI.init("canvas1");
 	
 	UI.createTheme("main", {
 		padding: 2,
@@ -12,7 +12,7 @@ window.onload = function() {
 	});
 	
 	UI.setTheme("main");
-	
+
 	p1 = UI.panel({
 		x: 0,
 		width: "100%",
@@ -76,8 +76,34 @@ window.onload = function() {
 		callback: testButton.bind(this, 1)
 	});
 
+	input1 = UI.input({
+		parent: p4,
+		x: "200px",
+		y: "0",
+	});
+
 	//this will be automatic soon
 	UI.fullscreen();
+
+	/*
+	var input = new CanvasInput({
+		canvas: document.getElementById("canvas1"),
+		fontSize: 18,
+		fontFamily: 'Arial',
+		fontColor: '#212121',
+		fontWeight: 'bold',
+		width: 300,
+		padding: 8,
+		borderWidth: 1,
+		borderColor: '#000',
+		borderRadius: 3,
+		boxShadow: '1px 1px 0px #fff',
+		innerShadow: '0px 0px 5px rgba(0, 0, 0, 0.5)',
+		placeHolder: 'Enter message here...',
+		x: 200,
+		y: 0
+	});
+	*/
 }
 
 function testButton(id) {
