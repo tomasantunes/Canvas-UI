@@ -545,7 +545,8 @@ UI.e("button", {
     calculate: function() {
         if(!this._src.complete) return;
         this.width = this._src.width;
-        this.height = this._src.height;
+		this.height = this._src.height;
+		
     },
 
     draw: function(ctx) {
@@ -561,10 +562,16 @@ UI.e("button", {
 	
 	click: function() {
 		var mousePos = UI.getMousePos();
-		if (mousePos.x < this._actual.x + this.width &&
-			mousePos.x + this.width > this._actual.x &&
-			mousePos.y < this._actual.y + this.height &&
-			mousePos.y + this.height > this._actual.y) {
+
+		var x = this._actual.x - this.borderSizeLeft;
+		var y = this._actual.y - this.borderSizeTop;
+
+		console.log(x);
+		
+		if (mousePos.x < x + this.width &&
+			mousePos.x + this.width > x &&
+			mousePos.y < y + this.height &&
+			mousePos.y + this.height > y) {
 				this.callback();
 		}
 	}
@@ -574,7 +581,6 @@ UI.e("input", {
     _src: null,
 
     init: function(opts) {
-		console.log(UI.getCanvasID());
         this._src = new CanvasInput();
 
         this._src.onload = function() {
@@ -604,12 +610,15 @@ UI.e("input", {
 			borderRadius: 3,
 			boxShadow: '1px 1px 0px #fff',
 			innerShadow: '0px 0px 5px rgba(0, 0, 0, 0.5)',
-			placeHolder: 'Enter message here...',
 			x: this._actual.x,
 			y: this._actual.y,
 		});
 
 		this._src.render();
+	},
+
+	getValue: function() {
+		return this._src.value();
 	}
 });
 	

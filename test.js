@@ -68,6 +68,12 @@ window.onload = function() {
         y: "25%"
 	});
 	
+	input1 = UI.input({
+		parent: p4,
+		x: "200px",
+		y: "0",
+	});
+
 	btn1 = UI.button({
 		src: "button1.png",
 		parent: p4,
@@ -76,36 +82,22 @@ window.onload = function() {
 		callback: testButton.bind(this, 1)
 	});
 
-	input1 = UI.input({
+	btn2 = UI.button({
+		src: "show-text-btn.png",
 		parent: p4,
-		x: "200px",
+		x: "400px",
 		y: "0",
+		callback: getTextValue.bind(this, input1)
 	});
 
 	//this will be automatic soon
 	UI.fullscreen();
-
-	/*
-	var input = new CanvasInput({
-		canvas: document.getElementById("canvas1"),
-		fontSize: 18,
-		fontFamily: 'Arial',
-		fontColor: '#212121',
-		fontWeight: 'bold',
-		width: 300,
-		padding: 8,
-		borderWidth: 1,
-		borderColor: '#000',
-		borderRadius: 3,
-		boxShadow: '1px 1px 0px #fff',
-		innerShadow: '0px 0px 5px rgba(0, 0, 0, 0.5)',
-		placeHolder: 'Enter message here...',
-		x: 200,
-		y: 0
-	});
-	*/
 }
 
 function testButton(id) {
 	alert("Button" + id.toString() + " clicked");
 };
+
+function getTextValue(input) {
+	alert(input.getValue());
+}
