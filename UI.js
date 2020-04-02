@@ -565,11 +565,9 @@ UI.e("button", {
 
 		var x = this._actual.x - this.borderSizeLeft;
 		var y = this._actual.y - this.borderSizeTop;
-
-		console.log(x);
 		
 		if (mousePos.x < x + this.width &&
-			mousePos.x + this.width > x &&
+			mousePos.x > x &&
 			mousePos.y < y + this.height &&
 			mousePos.y + this.height > y) {
 				this.callback();
