@@ -569,7 +569,7 @@ UI.e("button", {
 		if (mousePos.x < x + this.width &&
 			mousePos.x > x &&
 			mousePos.y < y + this.height &&
-			mousePos.y + this.height > y) {
+			mousePos.y > y) {
 				this.callback();
 		}
 	}
