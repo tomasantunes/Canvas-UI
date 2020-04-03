@@ -74,6 +74,14 @@ window.onload = function() {
 		y: "0",
 	});
 
+	dropdown1 = UI.dropdown({
+		parent: p4,
+		x: "600px",
+		y: 0,
+		width: 120,
+		height: 30
+	});
+
 	btn1 = UI.button({
 		src: "button1.png",
 		parent: p4,

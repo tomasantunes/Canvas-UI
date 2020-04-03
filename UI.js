@@ -152,6 +152,12 @@ var UI = (function() {
 			node.click(UI);
 		}
 	}
+
+	function triggerMouseMove(node) {
+		if (typeof node.mousemove !== "undefined") { 
+			node.mousemove(UI);
+		}
+	}
 	
 	/**
 	* Determine the actualy property values
@@ -383,6 +389,15 @@ var UI = (function() {
 				};
 				loopTree(tree, triggerClick)
 			};
+
+			canvas.onmousemove = function(e) {
+				var rect = canvas.getBoundingClientRect();
+				mousePos = {
+					x: e.clientX - rect.left,
+					y: e.clientY - rect.top
+				};
+				loopTree(tree, triggerMouseMove)
+			};
 		},
 
 		getMousePos: function() {
@@ -613,10 +628,128 @@ UI.e("input", {
 		});
 
 		this._src.render();
+	}
+});
+UI.e("dropdown", {
+	_src: null,
+	selected: "Selected item",
+	labels: ["1","2","3"],
+	mainDrop: null,
+	itemDrop: null,
+	visible: false,
+	ctx: null,
+	mousePos: {x: 0, y: 0},
+
+	init: function(opts) {
+		
+	},
+
+	calculate: function() {
+
+	},
+
+	drawDropdown: function(ctx, selected, items, x, y, w, h) {
+		ctx.strokeStyle = "black";
+		ctx.strokeRect(x, y, w, h);
+		ctx.fillText(selected, x + (w / 10), y + (h / 4));
+	},
+
+	drawItems(ctx, labels, x, y, w, h)
+	{
+		for(var i = 0; i < labels.length; i++) {
+			if (i == 0) {
+				ctx.strokeRect(x, y + h, w, h);
+				ctx.fillText(labels[i], x + (w / 10), y + h + (h / 2));
+			}
+			else {
+				ctx.strokeRect(x, y + ( h * (i + 1)), w, h);
+				ctx.fillText(labels[i], x + (w / 10), y + (h * (i + 1)) + (h / 2));
+			}
+		}
+	},
+
+	isInside: function(pos, rect) {
+		return pos.x > (rect.x-(rect.x/100*10)) && pos.x < rect.x+rect.width && pos.y < rect.y+(rect.height/2) && pos.y > (rect.y-(rect.y/100*50));
+	},
+
+	insideItem: function(mousePos){
+		var mouseY = mousePos.y;
+		var startPos;
+		var nextPos;
+		for(var i = 0; i < this.labels.length; i++) {
+			startPos = this.mainDrop.y + (this.mainDrop.height * (i + 1));
+			nextPos = startPos + this.mainDrop.height;
+			if (mouseY < nextPos && mouseY > startPos) {
+				return this.labels[i];
+			}        
+		}
+		return this.selected;
+	},
+
+	newLabel: function(newLabel, removedLabel){
+		UI.repaint();
+		this.selected = newLabel;
+		this.labels[this.labels.indexOf(this.selected)] = removedLabel;
+		UI.repaint();
+		this.drawDropdown(this.ctx, this.selected, this.labels, this.mainDrop.x, this.mainDrop.y, this.mainDrop.width, this.mainDrop.height);
+		this.visible = false;
+	},
+
+	click: function() {
+		var mousePos = UI.getMousePos();
+
+		var x = this._actual.x - this.borderSizeLeft;
+		var y = this._actual.y - this.borderSizeTop;
+
+		if (this.isInside(mousePos, {x: this.itemDrop.x, y: this.mainDrop.y + (this.mainDrop.height * (this.labels.length)), width: this.mainDrop.width, height: this.mainDrop.height})) {  
+			var item = this.insideItem(mousePos);
+			var oldItem = this.selected;
+			if(item != this.selected) {
+				this.newLabel(item, oldItem);
+				UI.repaint();
+			}
+		}
+	},
+
+	mousemove: function() {
+		var mousePos = UI.getMousePos();
+		var labelsHeight = this.mainDrop.y + this.mainDrop.height + (this.mainDrop.height * (this.labels.length + 1));
+		if (this.isInside(mousePos, {x: this.mainDrop.x, y: this.mainDrop.y, width: this.mainDrop.width, height: labelsHeight})) {
+			UI.repaint();
+			this.drawDropdown(this.ctx, this.selected, this.labels, this.mainDrop.x, this.mainDrop.y, this.mainDrop.width, this.mainDrop.height);
+			this.drawItems(this.ctx, this.labels, this.mainDrop.x, this.mainDrop.y, this.mainDrop.width, this.mainDrop.height);
+			this.visible = true;
+			
+		}
+		else if (!this.isInside(mousePos, {x: this.mainDrop.x, y: this.mainDrop.y, width: this.mainDrop.width, height: labelsHeight})) {
+			UI.repaint();
+			//ctx.clearRect(0,0, canvas.width, canvas.height);
+			this.drawDropdown(this.ctx, this.selected, this.labels, this.mainDrop.x, this.mainDrop.y, this.mainDrop.width, this.mainDrop.height);
+			visible = false;
+		}
+	},
+
+	draw: function(ctx) {
+		this.supr.draw.call(this, ctx);
+		this.ctx = ctx;
+
+		this.mainDrop = {
+			x: this._actual.x,
+			y: this._actual.y,
+			width: this.width,
+			height: this.height
+		};
+		this.itemDrop = {
+			x: this.mainDrop.x,
+			width: this.mainDrop.width,
+			height: this.mainDrop.height
+		};
+
+		var canvas = document.getElementById(UI.getCanvasID())
 	},
 
 	getValue: function() {
-		return this._src.value();
+
 	}
 });
 	
