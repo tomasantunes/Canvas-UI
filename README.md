@@ -1,5 +1,10 @@
 # Canvas-UI
 
+### Roadmap
+
+- Checkbox
+- Slider
+
 ```
 <canvas id="canvas1" width="500" height="500"></canvas>
 
