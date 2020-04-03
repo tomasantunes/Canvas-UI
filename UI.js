@@ -669,7 +669,10 @@ UI.e("dropdown", {
 	},
 
 	isInside: function(pos, rect) {
-		return pos.x > (rect.x-(rect.x/100*10)) && pos.x < rect.x+rect.width && pos.y < rect.y+(rect.height/2) && pos.y > (rect.y-(rect.y/100*50));
+		return pos.x < rect.x + rect.width &&
+			pos.x > rect.x &&
+			pos.y < rect.y + rect.height &&
+			pos.y > rect.y;
 	},
 
 	insideItem: function(mousePos){
@@ -679,6 +682,9 @@ UI.e("dropdown", {
 		for(var i = 0; i < this.labels.length; i++) {
 			startPos = this.mainDrop.y + (this.mainDrop.height * (i + 1));
 			nextPos = startPos + this.mainDrop.height;
+			console.log(mouseY);
+			console.log(startPos);
+			console.log(nextPos);
 			if (mouseY < nextPos && mouseY > startPos) {
 				return this.labels[i];
 			}        
@@ -701,7 +707,9 @@ UI.e("dropdown", {
 		var x = this._actual.x - this.borderSizeLeft;
 		var y = this._actual.y - this.borderSizeTop;
 
-		if (this.isInside(mousePos, {x: this.itemDrop.x, y: this.mainDrop.y + (this.mainDrop.height * (this.labels.length)), width: this.mainDrop.width, height: this.mainDrop.height})) {  
+		var labelsHeight = this.mainDrop.y + this.mainDrop.height + (this.mainDrop.height * (this.labels.length + 1));
+
+		if (this.isInside(mousePos, {x: this.itemDrop.x, y: this.mainDrop.y, width: this.mainDrop.width, height: labelsHeight})) {
 			var item = this.insideItem(mousePos);
 			var oldItem = this.selected;
 			if(item != this.selected) {
