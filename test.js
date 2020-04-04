@@ -82,6 +82,13 @@ window.onload = function() {
 		height: 30
 	});
 
+	checkbox1 = UI.checkbox({
+		parent: p4,
+		x: "0",
+		y: "100px",
+		checked: false
+	});
+
 	btn1 = UI.button({
 		src: "button1.png",
 		parent: p4,

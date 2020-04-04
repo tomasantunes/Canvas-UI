@@ -2,7 +2,6 @@
 
 ### Roadmap
 
-- Checkbox
 - Slider
 
 ```

@@ -590,6 +590,75 @@ UI.e("button", {
 	}
 });
 
+UI.e("checkbox", {
+	_src1: null,
+	_src2: null,
+	checked: false,
+
+    init: function(opts) {
+        this._src1 = new Image();
+		this._src1.src = "checkbox1.png";
+		this._src2 = new Image();
+		this._src2.src = "checkbox2.png";
+		this.checked = opts.checked;
+		this.callback = opts.callback;
+
+        this._src1.onload = function() {
+            UI.repaint();
+		}
+		this._src2.onload = function() {
+            UI.repaint();
+		}
+    },
+
+    calculate: function() {
+        if(this._src1.complete === false) return;
+		if(this._src2.complete === false) return;
+        this.width = 50;
+		this.height = 50;
+		
+    },
+
+    draw: function(ctx) {
+		this.supr.draw.call(this, ctx);
+		if(this._src1.complete === false) return;
+		if(this._src2.complete === false) return;
+
+		if (this.checked) {
+			ctx.drawImage(
+				this._src1,
+				this._actual.x,
+				this._actual.y,
+				this.width,
+				this.height
+			);
+		}
+		else {
+			ctx.drawImage(
+				this._src2,
+				this._actual.x,
+				this._actual.y,
+				this.width,
+				this.height
+			);
+		}
+	},
+	
+	click: function() {
+		var mousePos = UI.getMousePos();
+
+		var x = this._actual.x - this.borderSizeLeft;
+		var y = this._actual.y - this.borderSizeTop;
+		
+		if (mousePos.x < x + this.width &&
+			mousePos.x > x &&
+			mousePos.y < y + this.height &&
+			mousePos.y > y) {
+				this.checked = !this.checked;
+		}
+	}
+});
+
 UI.e("input", {
     _src: null,
 
