@@ -67,7 +67,7 @@ window.onload = function() {
         x: 0,
         y: "25%"
 	});
-	
+
 	input1 = UI.input({
 		parent: p4,
 		x: "200px",
@@ -87,6 +87,16 @@ window.onload = function() {
 		x: "0",
 		y: "100px",
 		checked: false
+	});
+
+	slider1 = UI.slider({
+		parent: p4,
+		x: "200px",
+		y: "100px",
+		width: 120,
+		height: 30,
+		min: 0,
+		max: 120
 	});
 
 	btn1 = UI.button({

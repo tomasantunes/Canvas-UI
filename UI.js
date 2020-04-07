@@ -153,6 +153,18 @@ var UI = (function() {
 		}
 	}
 
+	function triggerMousedown(node) {
+		if (typeof node.mousedown !== "undefined") { 
+			node.mousedown(UI);
+		}
+	}
+
+	function triggerMouseup(node) {
+		if (typeof node.mouseup !== "undefined") { 
+			node.mouseup(UI);
+		}
+	}
+
 	function triggerMouseMove(node) {
 		if (typeof node.mousemove !== "undefined") { 
 			node.mousemove(UI);
@@ -388,6 +400,24 @@ var UI = (function() {
 					y: e.clientY - rect.top
 				};
 				loopTree(tree, triggerClick)
+			};
+
+			canvas.onmousedown = function(e) {
+				var rect = canvas.getBoundingClientRect();
+				mousePos = {
+					x: e.clientX - rect.left,
+					y: e.clientY - rect.top
+				};
+				loopTree(tree, triggerMousedown)
+			};
+
+			canvas.onmouseup = function(e) {
+				var rect = canvas.getBoundingClientRect();
+				mousePos = {
+					x: e.clientX - rect.left,
+					y: e.clientY - rect.top
+				};
+				loopTree(tree, triggerMouseup)
 			};
 
 			canvas.onmousemove = function(e) {
@@ -718,13 +748,14 @@ UI.e("dropdown", {
 	},
 
 	drawDropdown: function(ctx, selected, items, x, y, w, h) {
+		ctx.font = "14px Arial";
 		ctx.strokeStyle = "black";
 		ctx.strokeRect(x, y, w, h);
-		ctx.fillText(selected, x + (w / 10), y + (h / 4));
+		ctx.fillText(selected, x + (w / 10), y + (h / 2));
 	},
 
-	drawItems(ctx, labels, x, y, w, h)
-	{
+	drawItems(ctx, labels, x, y, w, h) {
+		ctx.font = "14px Arial";
 		for(var i = 0; i < labels.length; i++) {
 			if (i == 0) {
 				ctx.strokeRect(x, y + h, w, h);
@@ -751,9 +782,6 @@ UI.e("dropdown", {
 		for(var i = 0; i < this.labels.length; i++) {
 			startPos = this.mainDrop.y + (this.mainDrop.height * (i + 1));
 			nextPos = startPos + this.mainDrop.height;
-			console.log(mouseY);
-			console.log(startPos);
-			console.log(nextPos);
 			if (mouseY < nextPos && mouseY > startPos) {
 				return this.labels[i];
 			}        
@@ -823,6 +851,98 @@ UI.e("dropdown", {
 		};
 
 		var canvas = document.getElementById(UI.getCanvasID())
+	},
+
+	getValue: function() {
+
+	}
+});
+
+UI.e("slider", {
+	_src: null,
+	selected: "0",
+	labels: [],
+	mainDrop: null,
+	visible: false,
+	ctx: null,
+	mousePos: {x: 0, y: 0},
+	prevPos: {x: 0, y: 0},
+	min: 0,
+	max: 100,
+	mouseIsPressed: false,
+
+	init: function(opts) {
+		this.min = opts.min;
+		this.max = opts.max;
+		for (var i = this.min; i <= this.max; i++) {
+			this.labels.push(i.toString());
+		}
+	},
+
+	calculate: function() {
+
+	},
+
+	drawSlider: function(ctx, selected, items, x, y, w, h) {
+		ctx.strokeStyle = "black";
+		ctx.strokeRect(x, y, w, h);
+		ctx.font = "30px Arial";
+		ctx.fillText("I", x + Number(selected), y + h - 4);
+	},
+
+	isInside: function(pos, rect) {
+		return pos.x < rect.x + rect.width &&
+			pos.x > rect.x &&
+			pos.y < rect.y + rect.height &&
+			pos.y > rect.y;
+	},
+
+	mousedown: function() {
+		var mousePos = UI.getMousePos();
+		if (this.isInside(mousePos, {x: this.mainDrop.x, y: this.mainDrop.y, width: this.mainDrop.width, height: this.mainDrop.height})) {
+			this.mouseIsPressed = true;
+		}
+	},
+
+	mouseup: function() {
+		this.mouseIsPressed = false;
+	},
+
+	mousemove: function() {
+		var mousePos = UI.getMousePos();
+		if (this.isInside(mousePos, {x: this.mainDrop.x, y: this.mainDrop.y, width: this.mainDrop.width, height: this.mainDrop.height})) {
+			if (this.mouseIsPressed == true) {
+				this.visible = true;
+				if (mousePos.x > this.prevPos.x) {
+					this.selected += 1;
+				}
+				else if (mousePos.x < this.prevPos.x) {
+					this.selected -= 1;
+				}
+				console.log(this.selected);
+				this.drawSlider(this.ctx, this.selected, this.labels, this.mainDrop.x, this.mainDrop.y, this.mainDrop.width, this.mainDrop.height);
+				this.prevPos = mousePos;
+			}
+			
+		}
+	},
+
+	draw: function(ctx) {
+		this.supr.draw.call(this, ctx);
+		this.ctx = ctx;
+
+		this.mainDrop = {
+			x: this._actual.x,
+			y: this._actual.y,
+			width: this.width,
+			height: this.height
+		};
+
+		this.prevPos.x = this.selected + this.mainDrop.x;
+
+		var canvas = document.getElementById(UI.getCanvasID());
+
+		this.drawSlider(this.ctx, this.selected, this.labels, this.mainDrop.x, this.mainDrop.y, this.mainDrop.width, this.mainDrop.height);
 	},
 
 	getValue: function() {

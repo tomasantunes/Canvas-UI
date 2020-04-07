@@ -1,9 +1,5 @@
 # Canvas-UI
 
-### Roadmap
-
-- Slider
-
 ```
 <canvas id="canvas1" width="500" height="500"></canvas>
 
