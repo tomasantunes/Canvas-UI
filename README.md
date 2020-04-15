@@ -2,7 +2,9 @@
 
 ### Roadmap
 
-- Define text on buttons
+- **Buttons**
+- Define text
+- Flat colors
 
 ```
 <canvas id="canvas1" width="500" height="500"></canvas>
